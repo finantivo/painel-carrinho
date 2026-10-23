@@ -19,11 +19,18 @@
 <iframe id="painel" title="Painel Carrinho de Festas"
   src="https://script.google.com/macros/s/AKfycbz0wf50aEogBDm_VAzxX5KhCOQcksikcw192OoyozWiMkESIxgI0NC78nY2cQd8mR2ArA/exec"
   allow="clipboard-write"></iframe>
-<!-- Se o navegador bloquear o login do Google dentro da moldura, oferece abrir o painel direto. -->
-<a class="ajuda" id="ajuda" target="_top"
-  href="https://script.google.com/macros/s/AKfycbz0wf50aEogBDm_VAzxX5KhCOQcksikcw192OoyozWiMkESIxgI0NC78nY2cQd8mR2ArA/exec">O painel não carregou? Abrir direto ›</a>
+<!-- Se o navegador não deixar o Google funcionar dentro da moldura (janela anônima, iPhone, sem login),
+     o painel não manda o aviso "ok" e a moldura abre o painel direto. -->
+<a class="ajuda" id="ajuda" target="_top" href="">O painel não carregou? Abrir direto ›</a>
 <script>
-  setTimeout(function () { document.getElementById('ajuda').classList.add('mostrar'); }, 25000);
+  var DIRETO = document.getElementById('painel').src;
+  var ok = false;
+  document.getElementById('ajuda').href = DIRETO;
+  window.addEventListener('message', function (e) {
+    if (e.data === 'painel-carrinho-ok' && /(^|\.)googleusercontent\.com$|(^|\.)google\.com$/.test(new URL(e.origin).hostname)) ok = true;
+  });
+  setTimeout(function () { if (!ok) location.replace(DIRETO); }, 9000);
+  setTimeout(function () { if (!ok) document.getElementById('ajuda').classList.add('mostrar'); }, 25000);
 </script>
 </body>
 </html>
