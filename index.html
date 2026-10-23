@@ -9,13 +9,17 @@
 <style>
   /* Moldura: mostra o painel (Google Apps Script) em tela cheia, sem dados próprios. */
   html, body { margin: 0; height: 100%; background: #F4F5F3; }
-  iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+  iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; visibility: hidden; }
+  iframe.pronto { visibility: visible; }
+  .carregando { position: fixed; inset: 0; display: grid; place-items: center; font: 600 15px/1.4 system-ui, sans-serif; color: #56605C; }
+  .carregando b { display: block; color: #17201D; font-size: 18px; margin-bottom: 4px; text-align: center; }
   .ajuda { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); font: 13px/1.4 system-ui, sans-serif;
     background: #17201D; color: #E8EEEB; padding: 8px 14px; border-radius: 999px; text-decoration: none; opacity: 0; transition: opacity .3s; }
   .ajuda.mostrar { opacity: .92; }
 </style>
 </head>
 <body>
+<div class="carregando" id="carregando"><div><b>Carrinho de Festas</b>Abrindo o painel…</div></div>
 <iframe id="painel" title="Painel Carrinho de Festas"
   src="https://script.google.com/macros/s/AKfycbz0wf50aEogBDm_VAzxX5KhCOQcksikcw192OoyozWiMkESIxgI0NC78nY2cQd8mR2ArA/exec"
   allow="clipboard-write"></iframe>
@@ -27,9 +31,13 @@
   var ok = false;
   document.getElementById('ajuda').href = DIRETO;
   window.addEventListener('message', function (e) {
-    if (e.data === 'painel-carrinho-ok' && /(^|\.)googleusercontent\.com$|(^|\.)google\.com$/.test(new URL(e.origin).hostname)) ok = true;
+    if (e.data === 'painel-carrinho-ok' && /(^|\.)googleusercontent\.com$|(^|\.)google\.com$/.test(new URL(e.origin).hostname)) {
+      ok = true;
+      document.getElementById('painel').classList.add('pronto');
+      document.getElementById('carregando').remove();
+    }
   });
-  setTimeout(function () { if (!ok) location.replace(DIRETO); }, 9000);
+  setTimeout(function () { if (!ok) location.replace(DIRETO); }, 8000);
   setTimeout(function () { if (!ok) document.getElementById('ajuda').classList.add('mostrar'); }, 25000);
 </script>
 </body>
